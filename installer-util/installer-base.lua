@@ -1,11 +1,26 @@
 local totalFiles = 0
 local filesDownloaded = 0
+local projectName = ""
+local authorName = ""
 
-local titleText = "Installing application..."
+local titleTemplate = "Installing %s..."
 local progressTemplate = "%s / %s files downloaded"
+local urlBase = ""
 
 local function setTotalFiles(n)
 	totalFiles = n
+end
+
+local function setAuthorName(n)
+	authorName = n
+end
+
+local function setProjectName(n)
+	projectName = n
+end
+
+local function setUrlBase(u)
+	urlBase = u
 end
 
 local function clearUI(isError)
@@ -26,6 +41,7 @@ local function updateUI()
 	term.clear()
 
 	local progressText = string.format(progressTemplate, filesDownloaded, totalFiles)
+	local titleText = string.format(titleTemplate, projectName .. (authorName ~= nil and "by " .. authorName or ""))
 	local titleTextLength = #titleText
 	local progressTextLength = #progressText
 
@@ -35,7 +51,7 @@ local function updateUI()
 	term.write(progressText)
 end
 
-local function getFile(filePath, urlBase)
+local function getFile(filePath)
 	if fs.exists(filePath) then
 		clearUI(true)
 		error(filePath .. " already exists")

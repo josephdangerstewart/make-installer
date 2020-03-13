@@ -4,8 +4,12 @@ if fs.exists("installer") then
 end
 
 -- Then get the list of files marked for bundling in package.lua
+local githubTemplate = "https://raw.githubusercontent.com/%s/%s/%s"
 local includedFiles = {}
+local ignoredFiles = {}
 local urlBase
+local authorName
+local projectName
 if fs.exists("package.lua") then
 	local file = fs.open("package.lua", "r")
 	local data = file.readAll()
@@ -13,7 +17,11 @@ if fs.exists("package.lua") then
 
 	local package = textutils.unserialise(data)
 	includedFiles = package.files
-	urlBase = package.contentBaseUrl
+	projectName = package.name
+	authorName = package.author or package.githubUserName
+	ignoredFiles = package.ignoredFiles or {}
+
+	urlBase = string.format(githubTemplate, package.githubUserName, package.githubRepository, package.branch or "master")
 end
 
 -- Convinence function for detecting if a file is included for bundling
@@ -24,6 +32,11 @@ local function fileIsIncluded(file)
 	local fileName = file
 	if fs.isDir(file) then
 		fileName = fileName .. "/"
+	end
+	for _,pattern in pairs(ignoredFiles) do
+		if fileMatchesPattern(fileName, pattern) then
+			return false
+		end
 	end
 	for _,pattern in pairs(includedFiles) do
 		if fileMatchesPattern(fileName, pattern) then
@@ -67,7 +80,7 @@ local function generateInstallerChunk(map)
 
 	for i,v in pairs(map.files) do
 		if type(v) == "string" then
-			code = code .. "getFile(\"" .. map.dirName .. v .. "\", urlBase)\n"
+			code = code .. "getFile(\"" .. map.dirName .. v .. "\")\n"
 			totalFiles = totalFiles + 1
 		elseif type(v) == "table" then
 			code = code .. generateInstallerChunk(v)
@@ -84,5 +97,13 @@ local installerBase = installerBaseFile.readAll()
 installerBaseFile.close()
 
 local file = fs.open("installer", "w")
-file.write(installerBase .. "\n\nsetTotalFiles(" .. totalFiles .. ")\n\nlocal urlBase = \"" .. urlBase .. "\"\n\n" .. generatedInstallerCode .. "\n\nclearUI()\n\n")
+file.write(
+	installerBase ..
+	"\n\nsetTotalFiles(" .. totalFiles .. ")\n\n" ..
+	"setUrlBase(\"" .. urlBase .. "\")\n\n" ..
+	"setAuthorName(\"" .. authorName .. "\")\n\n" ..
+	"setProjectName(\"" .. projectName .. "\")\n\n" ..
+	generatedInstallerCode ..
+	"\n\nclearUI()\n\n"
+)
 file.close()
