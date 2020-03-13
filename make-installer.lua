@@ -76,7 +76,7 @@ local fileMap = buildMapForDirectory("/")
 
 local totalFiles = 0
 local function generateInstallerChunk(map)
-	local code = "-- Chunk for \"" .. map.dirName .. "\"\nmakeDirOrThrow(\"" .. map.dirName ..  "\")\n"
+	local code = "-- Chunk for \"" .. map.dirName .. "\"\ttryMakeDir(\"" .. map.dirName ..  "\")\n"
 
 	for i,v in pairs(map.files) do
 		if type(v) == "string" then

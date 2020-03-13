@@ -29,7 +29,7 @@ local function clearUI(isError)
 	term.clear()
 	term.setCursorPos(1, 1)
 	if not isError then
-		print("Application is installed!")
+		print(projectName .. " is installed!")
 	end
 end
 
@@ -69,15 +69,12 @@ local function getFile(filePath)
 	updateUI()
 end
 
-local function makeDirOrThrow(dir)
+local function tryMakeDir(dir)
 	if dir == "/" then
 		return
 	end
 
-	if fs.exists(dir) then
-		clearUI(true)
-		error(dir .. " already exists")
-	else
+	if not fs.exists(dir) then
 		fs.makeDir(dir)
 	end
 end
@@ -92,10 +89,8 @@ setAuthorName("josephdangerstewart")
 
 setProjectName("turtle-master")
 
--- Chunk for "/"
-makeDirOrThrow("/")
--- Chunk for "/installer-util/"
-makeDirOrThrow("/installer-util/")
+-- Chunk for "/"	tryMakeDir("/")
+-- Chunk for "/installer-util/"	tryMakeDir("/installer-util/")
 getFile("/installer-util/installer-base.lua")
 getFile("/make-installer.lua")
 
