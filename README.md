@@ -1,12 +1,12 @@
 # make-installer
 
-A simple project for creating installers for larger computercraft projects hosted in a github repository. This project was used to make its own installer. **Your project must be in github in order to use this**
+A simple project for creating installers for larger computercraft projects hosted in a github repository. This project was used to make its own installer. It's intended mostly for larger projects that are comprised of many files or that are on github anyways. **Your project must be in github in order to use this**
 
 # Installation
 
 To install, run the following command
 
-`pastebin run L5vcu9he`
+`pastebin run kapT9yTW`
 
 # Usage
 
