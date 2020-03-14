@@ -6,7 +6,7 @@ A simple project for creating installers for larger computercraft projects hoste
 
 To install, run the following command
 
-`pastebin run kapT9yTW`
+`pastebin run 3grRYNhc`
 
 # Usage
 
